@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>Customer Cart</title>
+    
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}" />
+    <style>
+      
+      body {
+        font-family: "Montserrat", sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        background-color: #f4f4f4;
+      }
+      
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+
+      th,
+      td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+
+      th {
+        background-color: #34495e;
+        color: white;
+      }
+
+      tr:nth-child(even) {
+        background-color: #f2f2f2;
+      }
+
+      .remove-button {
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      .remove-button:hover {
+        background-color: #c82333;
+      }
+
+      
+      .pay-button-container {
+        text-align: center;
+        margin-top: 30px;
+      }
+
+      .pay-button {
+        background-color: #28a745;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+
+      .pay-button:hover {
+        background-color: #218838;
+      }
+    </style>
+  </head>
+  <body>
+    
+    <div th:replace="~{customer/_customer-sidebar :: customer-sidebar}"></div>
+
+    
+    <div class="main-content">
+      <h1>Cart</h1>
+
+      
+      <div th:if="${cartScores == null or cartScores.empty}">
+        <p>Your cart is empty.</p>
+      </div>
+
+      
+      <div th:unless="${cartScores == null or cartScores.empty}">
+        <table>
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>Title</th>
+              <th>Composer</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+            <tr th:each="score, stat : ${cartScores}">
+              <td th:text="${stat.index + 1}">No.</td>
+              <td th:text="${score.title}">Title</td>
+              <td th:text="${score.composer}">Composer</td>
+              <td>
+                
+                <form th:action="@{/remove}" method="post">
+                  <input type="hidden" name="scoreId" th:value="${score.id}" />
+                  <button type="submit" class="btn btn-danger">Remove</button>
+                </form>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="pay-button-container">
+          
+          <form th:action="@{/checkout}" method="post">
+            <button type="submit" class="pay-button">Pay</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

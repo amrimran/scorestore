@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>User Profile</title>
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}" />
+    <style>
+      body {
+        font-family: "Montserrat", sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        background-color: #f4f4f4;
+      }
+
+      .main-content {
+        margin-left: 250px;
+        padding: 40px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+      }
+
+      h1 {
+        color: #333;
+        margin-bottom: 30px;
+        font-size: 28px;
+        font-weight: 600;
+      }
+
+      .profile-form {
+        background-color: white;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        font-family: "Montserrat", sans-serif;
+        width: 100%;
+        max-width: 500px;
+      }
+
+      .profile-form div {
+        margin-bottom: 25px;
+      }
+
+      .profile-form label {
+        font-family: "Montserrat", sans-serif;
+        display: block;
+        font-weight: 500;
+        margin-bottom: 8px;
+        color: #2c3e50;
+        font-size: 16px;
+      }
+
+      .profile-form input[type="text"],
+      .profile-form input[type="email"],
+      .profile-form input[type="password"] {
+        font-family: "Montserrat", sans-serif;
+        width: 100%;
+        padding: 12px 16px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px;
+        box-sizing: border-box;
+        transition: all 0.3s ease;
+      }
+
+      .profile-form input[type="text"]:focus,
+      .profile-form input[type="email"]:focus,
+      .profile-form input[type="password"]:focus {
+        font-family: "Montserrat", sans-serif;
+        border-color: #3498db;
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+      }
+
+      .profile-form button {
+        background-color: #3498db;
+        color: white;
+        width: 100%;
+        padding: 14px 20px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-top: 10px;
+      }
+
+      .profile-form button:hover {
+        background-color: #2980b9;
+      }
+
+      @media (max-width: 768px) {
+        .main-content {
+          margin-left: 0;
+          padding: 20px;
+        }
+
+        .profile-form {
+          padding: 30px;
+          width: 90%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div th:replace="~{customer/_customer-sidebar :: customer-sidebar}"></div>
+
+    <div class="main-content">
+      <h1>User Profile</h1>
+      <form
+        class="profile-form"
+        th:action="@{/customer-update-profile}"
+        method="post"
+      >
+        <div>
+          <label for="username">Username:</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            th:value="${user.username}"
+            required
+          />
+        </div>
+        <div>
+          <label for="email">Email:</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            th:value="${user.email}"
+            required
+          />
+        </div>
+        <div>
+          <label for="password">Password:</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            th:value="${user.password}"
+            required
+          />
+        </div>
+        <button type="submit">Update Profile</button>
+      </form>
+    </div>
+  </body>
+</html>

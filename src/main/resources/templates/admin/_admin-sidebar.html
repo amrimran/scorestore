@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Customer Sidebar</title>
+</head>
+<body>
+    
+    <div th:fragment="admin-sidebar">
+        <nav>
+            
+            <div class="sidebar-header">
+                <h1>Score Store</h1>
+            </div>
+
+            
+            <ul>
+                <li><a th:href="@{/admin-dashboard}">Dashboard</a></li>
+                <li><a th:href="@{/admin-feedback}">Manage Feedback</a></li>
+                <li><a th:href="@{/admin-manage-scores}">Manage Scores</a></li>
+                <li><a th:href="@{/admin-user-profile}">Profile</a></li>
+            </ul>
+
+            
+            <div class="logout-container">
+                <a th:href="@{/logout}">Logout</a>
+            </div>
+        </nav>
+    </div>
+</body>
+</html>

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>Music Score Details</title>
+    <link rel="stylesheet" href="/css/sidebar.css" />
+    <style>
+      
+      body {
+        font-family: "Montserrat", sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        background-color: #f4f4f4;
+      }
+
+      
+      .main-content {
+        flex: 1;
+        padding: 40px;
+        background-color: white;
+        margin-left: 250px;
+        box-sizing: border-box;
+        height: 100vh;
+        overflow-y: auto;
+      }
+
+      .main-content h1 {
+        color: #34495e;
+        margin-bottom: 20px;
+        font-size: 28px;
+        font-weight: 600;
+      }
+
+      
+      .content-wrapper {
+        display: flex;
+        gap: 40px;
+        align-items: flex-start;
+      }
+
+      
+      .image-column {
+        flex: 1;
+        max-width: 400px;
+      }
+
+      .image-column img {
+        width: 100%;
+        height: auto;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      
+      .details-column {
+        flex: 2;
+      }
+
+      .details-column p {
+        margin: 15px 0;
+        font-size: 16px;
+        color: #333;
+      }
+
+      .details-column strong {
+        color: #34495e;
+        font-weight: 500;
+      }
+
+      
+      .back-link {
+        display: inline-block;
+        margin-top: 30px;
+        padding: 10px 20px;
+        background-color: #34495e;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        font-size: 14px;
+        transition: background-color 0.3s ease;
+      }
+
+      .back-link:hover {
+        background-color: #2c3e50;
+      }
+
+      
+      .error-message {
+        color: #e74c3c;
+        font-size: 16px;
+        margin-top: 20px;
+      }
+
+      
+      .edit-button {
+        padding: 10px 20px;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background-color 0.3s ease;
+      }
+
+      .edit-button:hover {
+        background-color: #2980b9;
+      }
+
+      
+      .popup-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        backdrop-filter: blur(2px);
+      }
+
+      .popup {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        z-index: 1001;
+        width: 90%;
+        max-width: 500px;
+      }
+
+      .popup h2 {
+        color: #2c3e50;
+        margin-top: 0;
+        margin-bottom: 1.5rem;
+        font-size: 1.5rem;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 0.75rem;
+      }
+
+      .popup label {
+        display: block;
+        margin-bottom: 8px;
+        color: #2c3e50;
+        font-weight: 500;
+      }
+
+      .popup input[type="text"],
+      .popup input[type="number"] {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+        box-sizing: border-box;
+      }
+
+      .popup-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 2.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #eee;
+        width: 100%;
+      }
+
+      .popup button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.2s ease;
+      }
+
+      .popup button[type="submit"] {
+        background-color: #3498db;
+        color: white;
+      }
+
+      .popup button[type="submit"]:hover {
+        background-color: #2980b9;
+      }
+
+      .popup button[type="button"] {
+        background-color: #e0e0e0;
+        color: #333;
+      }
+
+      .popup button[type="button"]:hover {
+        background-color: #d0d0d0;
+      }
+    </style>
+  </head>
+  <body>
+    
+    <div th:replace="~{admin/_admin-sidebar :: admin-sidebar}"></div>
+
+    
+    <div class="main-content">
+      <h1>Music Score Details</h1>
+      <div class="content-wrapper">
+        
+        <div class="image-column">
+          <img
+            th:if="${musicScore}"
+            th:src="@{'/images/' + ${musicScore.id} + '.png'}"
+            alt="Music Score Image"
+            onerror="this.src='/images/default-music-score.png'"
+          />
+          <img
+            th:unless="${musicScore}"
+            src="/images/default-music-score.png"
+            alt="Default Music Score Image"
+          />
+        </div>
+
+        
+        <div class="details-column">
+          <div th:if="${musicScore}">
+            <p>
+              <strong>Title:</strong>
+              <span th:text="${musicScore.title}"></span>
+            </p>
+            <p>
+              <strong>Composer:</strong>
+              <span th:text="${musicScore.composer}"></span>
+            </p>
+            <p>
+              <strong>Genre:</strong>
+              <span th:text="${musicScore.genre}"></span>
+            </p>
+            <p>
+              <strong>Emotion:</strong>
+              <span th:text="${musicScore.emotion}"></span>
+            </p>
+            <p>
+              <strong>Gender:</strong>
+              <span th:text="${musicScore.gender}"></span>
+            </p>
+            <p>
+              <strong>Price:</strong>
+              <span th:text="${musicScore.price}"></span>
+            </p>
+            
+            <button type="button" class="edit-button">Edit Score Details</button>
+          </div>
+          <div th:unless="${musicScore}" class="error-message">
+            <p>Music score not found.</p>
+          </div>
+        </div>
+      </div>
+
+      
+      <a class="back-link" th:href="@{/admin-manage-scores}"
+        >Back to List of Scores</a
+      >
+    </div>
+
+    
+    <div class="popup-overlay" id="popupOverlay"></div>
+
+    
+    <div class="popup" id="editPopup">
+      <h2>Edit Score Details</h2>
+      <form id="editForm">
+        <div>
+          <label for="editTitle">Title:</label>
+          <input
+            type="text"
+            id="editTitle"
+            name="title"
+            th:value="${musicScore.title}"
+            required
+          />
+        </div>
+
+        <div>
+          <label for="editComposer">Composer:</label>
+          <input
+            type="text"
+            id="editComposer"
+            name="composer"
+            th:value="${musicScore.composer}"
+            required
+          />
+        </div>
+
+        <div>
+          <label for="editGenre">Genre:</label>
+          <input
+            type="text"
+            id="editGenre"
+            name="genre"
+            th:value="${musicScore.genre}"
+            required
+          />
+        </div>
+
+        <div>
+          <label for="editEmotion">Emotion:</label>
+          <input
+            type="text"
+            id="editEmotion"
+            name="emotion"
+            th:value="${musicScore.emotion}"
+            required
+          />
+        </div>
+
+        <div>
+          <label for="editGender">Gender:</label>
+          <input
+            type="text"
+            id="editGender"
+            name="gender"
+            th:value="${musicScore.gender}"
+            required
+          />
+        </div>
+
+        <div>
+          <label for="editPrice">Price:</label>
+          <input
+            type="number"
+            id="editPrice"
+            name="price"
+            step="0.01"
+            th:value="${musicScore.price}"
+            required
+          />
+        </div>
+
+        <div class="popup-buttons">
+          <button type="button" onclick="closeEditPopup()">Cancel</button>
+          <button type="submit">Save Changes</button>
+        </div>
+      </form>
+    </div>
+
+    
+    <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const editButton = document.querySelector('.edit-button');
+        if (editButton) {
+          editButton.addEventListener('click', openEditPopup);
+        }
+
+                document.getElementById("popupOverlay").addEventListener('click', function(e) {
+          if (e.target === this) {
+            closeEditPopup();
+          }
+        });
+      });
+
+            function openEditPopup() {
+        console.log("Opening popup...");         document.getElementById("popupOverlay").style.display = "block";
+        document.getElementById("editPopup").style.display = "block";
+      }
+
+            function closeEditPopup() {
+        console.log("Closing popup...");         document.getElementById("popupOverlay").style.display = "none";
+        document.getElementById("editPopup").style.display = "none";
+      }
+
+            document.getElementById("editForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+
+                const updatedData = {
+          title: document.getElementById("editTitle").value,
+          composer: document.getElementById("editComposer").value,
+          genre: document.getElementById("editGenre").value,
+          emotion: document.getElementById("editEmotion").value,
+          gender: document.getElementById("editGender").value,
+          price: parseFloat(document.getElementById("editPrice").value)
+        };
+
+                const musicScoreId = window.location.pathname.split("/").pop();
+
+        console.log("Sending updated data:", updatedData);
+
+                fetch(`/update-score/${musicScoreId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(updatedData)
+        })
+        .then(response => {
+          if (!response.ok) {
+            return response.text().then(text => {
+              console.error("Response status:", response.status);
+              console.error("Response body:", text);
+              throw new Error("Failed to update score: " + text);
+            });
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log("Success:", data);
+          alert("Changes saved successfully!");
+          closeEditPopup();
+          window.location.reload();
+        })
+        .catch(error => {
+          console.error("Error:", error);
+          alert("Failed to save changes. Please try again.");
+        });
+      });
+    </script>
+  </body>
+</html>

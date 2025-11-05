@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"> 
+<head>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>Manage Feedback</title>
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}" />
+    <style>
+      
+      body {
+        font-family: "Montserrat", sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        background-color: #f4f4f4;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      th,
+      td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+      th {
+        background-color: #34495e;
+        color: white;
+      }
+      tr:nth-child(even) {
+        background-color: #f2f2f2;
+      }
+     
+      .popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+    z-index: 1000;
+    width: 90%;
+    max-width: 500px;
+  }
+
+  .popup h2 {
+    color: #2c3e50;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 0.75rem;
+  }
+
+  .popup-content {
+    margin-bottom: 1.5rem;
+  }
+
+  .popup-field {
+    margin-bottom: 1rem;
+  }
+
+  .popup-field strong {
+    color: #2c3e50;
+    display: inline-block;
+    width: 120px;
+    margin-right: 0.5rem;
+  }
+
+  .popup-field span {
+    color: #555;
+  }
+
+  .popup-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #eee;
+    width: 100%;
+  }
+
+  .popup select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-top: 0.5rem;
+    font-size: 0.95rem;
+  }
+
+  .popup button {
+    padding: 0.5rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+
+  .popup button[type="submit"] {
+    background-color: #3498db;
+    color: white;
+  }
+
+  .popup button[type="submit"]:hover {
+    background-color: #2980b9;
+  }
+
+  .popup button[type="button"] {
+    background-color: #e0e0e0;
+    color: #333;
+  }
+
+  .popup button[type="button"]:hover {
+    background-color: #d0d0d0;
+  }
+
+  .popup-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    backdrop-filter: blur(2px);
+  }
+
+  .status-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #2c3e50;
+    font-weight: 500;
+  }
+
+  action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.action-buttons button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: "Montserrat", sans-serif;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.view-button {
+    background-color: #3498db;
+    color: white;
+}
+
+.view-button:hover {
+    background-color: #2980b9;
+}
+
+.delete-button {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.delete-button:hover {
+    background-color: #c0392b;
+}
+    </style>
+  </head>
+  <body>
+    
+    <div th:replace="~{admin/_admin-sidebar :: admin-sidebar}"></div>
+
+    
+    <div class="main-content">
+      <h1>Manage Feedback</h1>
+
+      
+      
+<table>
+  <thead>
+      <tr>
+          <th>Feedback ID</th>
+          <th>Title</th>
+          <th>Detail</th>
+          <th>Status</th>
+          <th>Actions</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr th:each="feedback : ${feedbackList}">
+          <td th:text="${feedback.feedbackId}"></td>
+          <td th:text="${feedback.feedbackTitle}"></td>
+          <td th:text="${feedback.feedbackDetail}"></td>
+          <td th:text="${feedback.feedbackStatus}"></td>
+          <td>
+              <div class="action-buttons">
+                  <button 
+                      class="action-button view-button"
+                      th:data-feedback-id="${feedback.feedbackId}"
+                      th:data-feedback-title="${feedback.feedbackTitle}"
+                      th:data-feedback-detail="${feedback.feedbackDetail}"
+                      th:data-feedback-status="${feedback.feedbackStatus}"
+                      onclick="openPopup(this)">
+                      View
+                  </button>
+                  <button 
+                      class="action-button delete-button"
+                      th:data-feedback-id="${feedback.feedbackId}"
+                      onclick="deleteFeedback(this)">
+                      Delete
+                  </button>
+              </div>
+          </td>
+      </tr>
+  </tbody>
+</table>
+
+      
+      <div class="popup" id="feedbackPopup">
+        <h2>Feedback Details</h2>
+        
+        <div class="popup-content">
+          <div class="popup-field">
+            <strong>Feedback ID:</strong>
+            <span id="popupFeedbackId"></span>
+          </div>
+          
+          <div class="popup-field">
+            <strong>Title:</strong>
+            <span id="popupFeedbackTitle"></span>
+          </div>
+          
+          <div class="popup-field">
+            <strong>Detail:</strong>
+            <span id="popupFeedbackDetail"></span>
+          </div>
+          
+          <div class="popup-field">
+            <strong>Current Status:</strong>
+            <span id="popupFeedbackStatus"></span>
+          </div>
+      
+          
+          <form id="updateFeedbackForm" method="post" th:action="@{/update-feedback-status}">
+            <input type="hidden" id="feedbackId" name="feedbackId" />
+            <label class="status-label" for="feedbackStatus">Update Status:</label>
+            <select id="feedbackStatus" name="feedbackStatus" required>
+                <option value="Resolved">Resolved</option>
+                <option value="Unresolved">Unresolved</option>
+            </select>
+            <div class="popup-buttons">
+                <button type="submit">Update Status</button>
+                <button type="button" onclick="closePopup()">Close</button>
+            </div>
+        </form>
+    </div>
+
+    
+    <script>
+      function openPopup(button) {
+        const feedbackId = button.getAttribute("data-feedback-id");
+    const feedbackTitle = button.getAttribute("data-feedback-title");
+    const feedbackDetail = button.getAttribute("data-feedback-detail");
+    const feedbackStatus = button.getAttribute("data-feedback-status");
+
+        document.getElementById("popupFeedbackId").textContent = feedbackId;
+    document.getElementById("popupFeedbackTitle").textContent = feedbackTitle;
+    document.getElementById("popupFeedbackDetail").textContent = feedbackDetail;
+    document.getElementById("popupFeedbackStatus").textContent = feedbackStatus;
+
+        document.getElementById("feedbackStatus").value = feedbackStatus;
+
+        document.getElementById("feedbackId").value = feedbackId;
+
+        document.getElementById("feedbackPopup").style.display = "block";
+    document.getElementById("popupOverlay").style.display = "block";
+}
+function closePopup() {
+    document.getElementById("feedbackPopup").style.display = "none";
+    document.getElementById("popupOverlay").style.display = "none";
+  }
+
+  function deleteFeedback(button) {
+    const feedbackId = button.getAttribute("data-feedback-id");
+    
+    if (confirm("Are you sure you want to delete this feedback?")) {
+                fetch(`/delete-feedback/${feedbackId}`, {
+            method: 'DELETE',
+        })
+        .then(response => {
+            if (response.ok) {
+                                button.closest('tr').remove();
+                alert("Feedback deleted successfully");
+            } else {
+                alert("Failed to delete feedback. Please try again.");
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert("An error occurred while deleting the feedback.");
+        });
+    }
+}
+  
+    </script>
+  </body>
+</html>

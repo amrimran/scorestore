@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Customer Sidebar</title>
+</head>
+<body>
+    
+    <div th:fragment="customer-sidebar">
+        <nav>
+            
+            <div class="sidebar-header">
+                <h1>Score Store</h1>
+            </div>
+
+            
+            <ul>
+                <li><a th:href="@{/customer-homepage}">Home</a></li>
+                <li><a th:href="@{/customer-library}">Library</a></li>
+                <li><a th:href="@{/customer-cart}">Cart</a></li>
+                <li><a th:href="@{/customer-feedback}">Feedback</a></li>
+                <li><a th:href="@{/customer-user-profile}">Profile</a></li>
+            </ul>
+
+            
+            <div class="logout-container">
+                <a th:href="@{/logout}">Logout</a>
+            </div>
+        </nav>
+    </div>
+</body>
+</html>

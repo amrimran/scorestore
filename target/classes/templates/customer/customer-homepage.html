@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>Customer Homepage</title>
+    <style>
+      
+      body {
+        font-family: "Montserrat", sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        background-color: #f4f4f4;
+      }
+
+      
+      .sidebar {
+        width: 250px;
+        background-color: #2c3e50;
+        color: white;
+        height: 100vh;
+        padding: 20px;
+        box-sizing: border-box;
+        position: fixed;
+      }
+
+      .sidebar h2 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .sidebar ul {
+        list-style-type: none;
+        padding: 0;
+      }
+
+      .sidebar ul li {
+        margin: 15px 0;
+      }
+
+      .sidebar ul li a {
+        color: white;
+        text-decoration: none;
+        font-size: 18px;
+      }
+
+      .sidebar ul li a:hover {
+        text-decoration: underline;
+      }
+
+      .logout-button {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+      }
+
+      .logout-button a {
+        color: white;
+        text-decoration: none;
+        font-size: 18px;
+      }
+
+      .logout-button a:hover {
+        text-decoration: underline;
+      }
+
+      
+      .main-content {
+        flex: 1;
+        padding: 20px;
+        background-color: white;
+        margin-left: 250px;
+        box-sizing: border-box;
+        height: 100vh;
+        overflow-y: auto;
+      }
+
+      .main-content h1 {
+        color: #34495e;
+        margin-bottom: 20px;
+      }
+
+      
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+
+      table,
+      th,
+      td {
+        border: 1px solid #ddd;
+      }
+
+      th,
+      td {
+        padding: 12px;
+        text-align: left;
+      }
+
+      th {
+        background-color: #34495e;
+        color: white;
+      }
+
+      tr:nth-child(even) {
+        background-color: #f2f2f2;
+      }
+
+      .add-to-cart-button {
+        background-color: #28a745;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      .add-to-cart-button:disabled {
+        background-color: #6c757d; 
+        cursor: not-allowed;
+      }
+
+      .add-to-cart-button:hover:not(:disabled) {
+        background-color: #218838;
+      }
+    </style>
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}" />
+  </head>
+  <body>
+    
+    <div th:replace="~{customer/_customer-sidebar :: customer-sidebar}"></div>
+
+    
+    <div class="main-content">
+      <h1>Homepage</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>No.</th>
+            <th>Title</th>
+            <th>Composer</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+          <tr th:each="score, stat : ${scoresNotOwned}">
+            <td th:text="${stat.index + 1}">No.</td>
+            <td th:text="${score.title}">Title</td>
+            <td th:text="${score.composer}">Composer</td>
+            <td>
+              <form th:action="@{/add-to-cart}" method="post">
+                <input type="hidden" name="scoreId" th:value="${score.id}" />
+                <button
+                  type="submit"
+                  class="add-to-cart-button"
+                  th:disabled="${cartScoreIds.contains(score.id)}"
+                >
+                  <span th:if="${cartScoreIds.contains(score.id)}"
+                    >Added to Cart</span
+                  >
+                  <span th:unless="${cartScoreIds.contains(score.id)}"
+                    >Add to Cart</span
+                  >
+                </button>
+              </form>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>Library</title>
+    <style>
+      
+      body {
+        font-family: "Montserrat", sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        background-color: #f4f4f4;
+      }
+
+      
+      .main-content {
+        flex: 1;
+        padding: 20px;
+        background-color: white;
+        margin-left: 250px; 
+        box-sizing: border-box;
+        height: 100vh; 
+        overflow-y: auto; 
+      }
+
+      .main-content h1 {
+        color: #34495e; 
+        margin-bottom: 20px;
+      }
+
+      
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+
+      table,
+      th,
+      td {
+        border: 1px solid #ddd;
+      }
+
+      th,
+      td {
+        padding: 12px;
+        text-align: left;
+      }
+
+      th {
+        background-color: #34495e; 
+        color: white;
+      }
+
+      tr:nth-child(even) {
+        background-color: #f2f2f2;
+      }
+
+      
+      tr.clickable-row:hover {
+        background-color: #f5f5f5;
+        cursor: pointer;
+      }
+
+      
+      .action-button {
+        background-color: #34495e; 
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+      }
+
+      .action-button:hover {
+        background-color: #2c3e50; 
+      }
+    </style>
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}" />
+  </head>
+  <body>
+    
+    <div th:replace="~{customer/_customer-sidebar :: customer-sidebar}"></div>
+
+    
+    <div class="main-content">
+      <h1>My Library</h1>
+      <div th:if="${error}" class="error-message" th:text="${error}"></div>
+      <table th:if="${ownedScores != null and !ownedScores.empty}">
+        <thead>
+          <tr>
+            <th>No.</th>
+            <th>Title</th>
+            <th>Composer</th>
+            <th>Genre</th>
+            <th>Action</th> 
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="score, stat : ${ownedScores}">
+            <td th:text="${stat.index + 1}">No.</td>
+            <td th:text="${score.title}">Title</td>
+            <td th:text="${score.composer}">Composer</td>
+            <td th:text="${score.genre}">Genre</td>
+            <td>
+              
+              <a th:href="@{/customer-music-score-view/{id}(id=${score.id})}">
+                <button class="action-button">View</button>
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div th:if="${ownedScores == null or ownedScores.empty}" class="error-message">
+        No music scores found in your library.
+      </div>
+    </div>
+  </body>
+</html>

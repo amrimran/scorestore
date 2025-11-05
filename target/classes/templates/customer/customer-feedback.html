@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>Feedback</title>
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}" />
+    <style>
+      /* General Styles */
+      body {
+        font-family: "Montserrat", sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        background-color: #f4f4f4;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+
+      th,
+      td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+
+      th {
+        background-color: #34495e;
+        color: white;
+      }
+
+      tr:nth-child(even) {
+        background-color: #f2f2f2;
+      }
+
+      /* Popup Styles */
+      .popup {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        padding: 24px; /* Increased padding for better spacing */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        width: 90%;
+        max-width: 500px;
+        border-radius: 8px;
+        box-sizing: border-box; /* Ensures padding is included in the width */
+        overflow: auto; /* Adds scrollbars if content overflows */
+      }
+
+      .popup h2 {
+        margin-top: 0;
+        font-size: 1.5em;
+        color: #34495e;
+        margin-bottom: 16px; /* Added margin for spacing */
+      }
+
+      .popup label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: #34495e;
+      }
+
+      .popup input[type="text"],
+      .popup textarea {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 16px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-family: "Montserrat", sans-serif;
+        font-size: 14px;
+        box-sizing: border-box; /* Ensures padding is included in the width */
+      }
+
+      .popup textarea {
+        resize: vertical;
+        min-height: 100px;
+      }
+
+      .popup-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 20px;
+      }
+
+      .popup button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-family: "Montserrat", sans-serif;
+        font-size: 14px;
+        transition: background-color 0.3s ease;
+      }
+
+      .popup button[type="submit"] {
+        background-color: #27ae60;
+        color: white;
+      }
+
+      .popup button[type="submit"]:hover {
+        background-color: #219653;
+      }
+
+      .popup button[type="button"] {
+        background-color: #e74c3c;
+        color: white;
+      }
+
+      .popup button[type="button"]:hover {
+        background-color: #c0392b;
+      }
+
+      /* View Button Styles */
+      .view-button {
+        background-color: #3498db;
+        color: white;
+        padding: 6px 12px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-family: "Montserrat", sans-serif;
+        font-size: 14px;
+        transition: background-color 0.3s ease;
+      }
+
+      .view-button:hover {
+        background-color: #2980b9;
+      }
+
+      /* Add Feedback Button Styles */
+      .add-feedback-button {
+        background-color: #27ae60;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-family: "Montserrat", sans-serif;
+        font-size: 14px;
+        transition: background-color 0.3s ease;
+        margin-bottom: 20px;
+      }
+
+      .add-feedback-button:hover {
+        background-color: #219653;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Sidebar -->
+    <div th:replace="~{customer/_customer-sidebar :: customer-sidebar}"></div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <h1>Feedback</h1>
+
+      <!-- Add New Feedback Button -->
+      <button class="add-feedback-button" onclick="openAddFeedbackPopup()">
+        Add New Feedback
+      </button>
+
+      <!-- Feedback Table -->
+      <table>
+        <thead>
+          <tr>
+            <th>Feedback ID</th>
+            <th>Title</th>
+            <th>Detail</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="feedback : ${feedbackList}">
+            <td th:text="${feedback.feedbackId}"></td>
+            <td th:text="${feedback.feedbackTitle}"></td>
+            <td th:text="${feedback.feedbackDetail}"></td>
+            <td th:text="${feedback.feedbackStatus}"></td>
+            <td>
+              <button
+                class="view-button"
+                th:data-feedback-id="${feedback.feedbackId}"
+                th:data-feedback-title="${feedback.feedbackTitle}"
+                th:data-feedback-detail="${feedback.feedbackDetail}"
+                th:data-feedback-status="${feedback.feedbackStatus}"
+                onclick="openPopup(this)"
+              >
+                View
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Feedback Details Popup -->
+      <div class="popup-overlay" id="popupOverlay"></div>
+      <div class="popup" id="feedbackPopup">
+        <h2>Feedback Details</h2>
+        <p><strong>Feedback ID:</strong> <span id="popupFeedbackId"></span></p>
+        <p><strong>Title:</strong> <span id="popupFeedbackTitle"></span></p>
+        <p><strong>Detail:</strong> <span id="popupFeedbackDetail"></span></p>
+        <p>
+          <strong>Current Status:</strong>
+          <span id="popupFeedbackStatus"></span>
+        </p>
+        <button type="button" onclick="closePopup()">Close</button>
+      </div>
+
+      <!-- Add Feedback Popup -->
+      <div class="popup-overlay" id="addFeedbackOverlay"></div>
+      <div class="popup" id="addFeedbackPopup">
+        <h2>Add New Feedback</h2>
+        <form id="addFeedbackForm" method="post" th:action="@{/submit}">
+          <label for="feedbackTitle">Title:</label>
+          <input type="text" id="feedbackTitle" name="feedbackTitle" required />
+          <br />
+          <label for="feedbackDetail">Detail:</label>
+          <textarea
+            id="feedbackDetail"
+            name="feedbackDetail"
+            required
+          ></textarea>
+          <br />
+          <div class="popup-buttons">
+            <button type="submit">Submit</button>
+            <button type="button" onclick="closeAddFeedbackPopup()">
+              Close
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+      function openPopup(button) {
+        const feedbackId = button.getAttribute("data-feedback-id");
+        const feedbackTitle = button.getAttribute("data-feedback-title");
+        const feedbackDetail = button.getAttribute("data-feedback-detail");
+        const feedbackStatus = button.getAttribute("data-feedback-status");
+
+        document.getElementById("popupFeedbackId").textContent = feedbackId;
+        document.getElementById("popupFeedbackTitle").textContent =
+          feedbackTitle;
+        document.getElementById("popupFeedbackDetail").textContent =
+          feedbackDetail;
+        document.getElementById("popupFeedbackStatus").textContent =
+          feedbackStatus;
+
+        document.getElementById("feedbackPopup").style.display = "block";
+        document.getElementById("popupOverlay").style.display = "block";
+      }
+
+      function closePopup() {
+        document.getElementById("feedbackPopup").style.display = "none";
+        document.getElementById("popupOverlay").style.display = "none";
+      }
+
+      function openAddFeedbackPopup() {
+        document.getElementById("addFeedbackPopup").style.display = "block";
+        document.getElementById("addFeedbackOverlay").style.display = "block";
+      }
+
+      function closeAddFeedbackPopup() {
+        document.getElementById("addFeedbackPopup").style.display = "none";
+        document.getElementById("addFeedbackOverlay").style.display = "none";
+      }
+
+      document
+        .getElementById("addFeedbackForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+          const feedbackTitle = document.getElementById("feedbackTitle").value;
+          const feedbackDetail =
+            document.getElementById("feedbackDetail").value;
+          console.log("Form Data:", { feedbackTitle, feedbackDetail });
+
+          fetch("submit", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: `feedbackTitle=${encodeURIComponent(
+              feedbackTitle
+            )}&feedbackDetail=${encodeURIComponent(feedbackDetail)}`,
+          })
+            .then((response) => {
+              if (response.ok) {
+                console.log("Feedback submitted successfully!");
+                window.location.reload();
+              } else {
+                console.error(
+                  "Failed to submit feedback:",
+                  response.statusText
+                );
+                alert("Failed to submit feedback. Please try again.");
+              }
+            })
+            .catch((error) => {
+              console.error("Error submitting feedback:", error);
+              alert("An error occurred. Please try again.");
+            });
+        });
+    </script>
+  </body>
+</html>

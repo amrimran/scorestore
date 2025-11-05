@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>Music Score Details</title>
+    <link rel="stylesheet" href="/css/sidebar.css" />
+    <style>
+      
+      body {
+        font-family: "Montserrat", sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        background-color: #f4f4f4;
+      }
+
+      
+      .main-content {
+        flex: 1;
+        padding: 40px;
+        background-color: white;
+        margin-left: 250px; 
+        box-sizing: border-box;
+        height: 100vh; 
+        overflow-y: auto; 
+      }
+
+      .main-content h1 {
+        color: #34495e; 
+        margin-bottom: 20px;
+        font-size: 28px;
+        font-weight: 600;
+      }
+
+      
+      .content-wrapper {
+        display: flex;
+        gap: 40px; 
+        align-items: flex-start;
+      }
+
+      
+      .image-column {
+        flex: 1;
+        max-width: 400px;
+      }
+
+      .image-column img {
+        width: 100%;
+        height: auto;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      
+      .details-column {
+        flex: 2;
+      }
+
+      .details-column p {
+        margin: 15px 0;
+        font-size: 16px;
+        color: #333;
+      }
+
+      .details-column strong {
+        color: #34495e; 
+        font-weight: 500;
+      }
+
+      
+      .back-link {
+        display: inline-block;
+        margin-top: 30px;
+        padding: 10px 20px;
+        background-color: #34495e; 
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        font-size: 14px;
+        transition: background-color 0.3s ease;
+      }
+
+      .back-link:hover {
+        background-color: #2c3e50; 
+      }
+
+      
+      .error-message {
+        color: #e74c3c; 
+        font-size: 16px;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    
+    <div th:replace="~{customer/_customer-sidebar :: customer-sidebar}"></div>
+
+    
+    <div class="main-content">
+      <h1>Music Score Details</h1>
+      <div class="content-wrapper">
+        
+        <div class="image-column">
+          
+          <img
+            th:if="${musicScore}"
+            th:src="|/images/${musicScore.id}.png|"
+            alt="Music Score Image"
+            onerror="this.src='/images/default-music-score.png'"
+          />
+          <img
+            th:unless="${musicScore}"
+            src="/images/default-music-score.png"
+            alt="Default Music Score Image"
+          />
+        </div>
+
+        
+        <div class="details-column">
+          <div th:if="${musicScore}">
+            <p>
+              <strong>Title:</strong> <span th:text="${musicScore.title}"></span>
+            </p>
+            <p>
+              <strong>Composer:</strong>
+              <span th:text="${musicScore.composer}"></span>
+            </p>
+            <p>
+              <strong>Genre:</strong> <span th:text="${musicScore.genre}"></span>
+            </p>
+            <p>
+              <strong>Emotion:</strong>
+              <span th:text="${musicScore.emotion}"></span>
+            </p>
+            <p>
+              <strong>Gender:</strong>
+              <span th:text="${musicScore.gender}"></span>
+            </p>
+            <p>
+              <strong>Price:</strong> <span th:text="${musicScore.price}"></span>
+            </p>
+          </div>
+          <div th:unless="${musicScore}" class="error-message">
+            <p>Music score not found.</p>
+          </div>
+        </div>
+      </div>
+
+      
+      <a class="back-link" th:href="@{/customer-library}">Back to Library</a>
+    </div>
+  </body>
+</html>
