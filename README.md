@@ -1,36 +1,36 @@
 # scorestore
 Music Score Store using Java Spring Boot using Component-Based Approach
 
-Purpose: To design a web-based platform that allows customers to browse, purchase, and access digital music scores.
+## Purpose
+To design a web-based platform that allows customers to browse, purchase, and access digital music scores.
 
-Project Details Brief:
+## Project Details Brief
 - Actor(s): User, Admin
 - Module(s): Authentication Module, Account Management Module, Music Score Access Module, Feedback Module & Music Score Management Module
 - Use Case Diagram:
+![Use Case Diagram](use-case-diagram.png)
+-----------
+
+## Project Structure
+![Project Structure](use-case-diagram.png)
 
 -----------
 
-Implementation Details:
+## Tools Needed to Run Locally
+1. _OpenJDK Java 17_
+2. _SpringBoot3.4.1_
+3. _Thymeleaf_
+4. _MySQL_
+5. _Maven_
+6. _VS Code_
 
-
-
------------
-
-Tools Needed to Run Locally:
-1. OpenJDK Java 17
-2. SpringBoot3.4.1
-3. Thymeleaf
-4. MySQL
-5. Maven
-6. VS Code
-
-Installation Guide
+## Installation Guide
 
 1. Clone this repo into your local machine.
 2. Ensure all the these tools (JDK 17, Apache Maven, MySQL) are there and working.
 4. Open MySQL through Command Prompt(Windows)/Terminal(MacOS) using command _mysql -u root -p_ respectively based on OS used.
 5. Upon entering MySQL command-cine client mode, create a database named _scorestore_.
-      _CREATE DATABASE scorestore;_
+   - _CREATE DATABASE scorestore;_
 6. Update the Update the application.properties file located in src/main/resources with your MySQL credentials. Replace your-username and your-password with your MySQL credentials.
 
 ```
