@@ -1,22 +1,22 @@
 # scorestore
 Music Score Store using Java Spring Boot using Component-Based Approach
 
-## Purpose
+### Purpose
 To design a web-based platform that allows customers to browse, purchase, and access digital music scores.
 
-## Project Details Brief
+### Project Details Brief
 - Actor(s): User, Admin
 - Module(s): Authentication Module, Account Management Module, Music Score Access Module, Feedback Module & Music Score Management Module
 - Use Case Diagram:
 ![Use Case Diagram](use-case-diagram.png)
 -----------
 
-## Project Structure
-![Project Structure](use-case-diagram.png)
+### Project Structure
+![Project Structure](project-structure.png)
 
 -----------
 
-## Tools Needed to Run Locally
+### Tools Needed to Run Locally
 1. _OpenJDK Java 17_
 2. _SpringBoot3.4.1_
 3. _Thymeleaf_
@@ -24,7 +24,7 @@ To design a web-based platform that allows customers to browse, purchase, and ac
 5. _Maven_
 6. _VS Code_
 
-## Installation Guide
+### Installation Guide
 
 1. Clone this repo into your local machine.
 2. Ensure all the these tools (JDK 17, Apache Maven, MySQL) are there and working.
